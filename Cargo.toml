@@ -1,0 +1,13 @@
+[package]
+name = "ssd1315"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+display-interface = "0.5.0"
+display-interface-i2c = "0.5.0"
+display-interface-spi = "0.5.0"
+embedded-graphics-core = "0.4.0"
+embedded-hal = "1.0.0"
