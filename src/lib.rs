@@ -38,6 +38,8 @@ pub struct I2cSsd1315<I: I2c> {
 
 pub struct SpiSsd1315<S: SpiDevice> {
     pub interface: SPIInterface<S, DataCommand>,
+    pub display_mode: DisplayMode,
+    pub rotation: DisplayRotation,
 }
 
 impl<I: I2c> I2cSsd1315<I> {
@@ -51,7 +53,15 @@ impl<I: I2c> I2cSsd1315<I> {
 }
 
 impl<S: SpiDevice> SpiSsd1315<S> {
-    pub fn new(spi: SPIInterface<S, DataCommand>) -> Self {
-        Self { interface: spi }
+    pub fn new(
+        spi: SPIInterface<S, DataCommand>,
+        display_mode: DisplayMode,
+        rotation: DisplayRotation,
+    ) -> Self {
+        Self {
+            interface: spi,
+            display_mode,
+            rotation,
+        }
     }
 }
