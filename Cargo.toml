@@ -1,7 +1,15 @@
 [package]
 name = "ssd1315"
-version = "0.1.0"
+version = "0.0.0"
 edition = "2021"
+authors = ["Rean Fei <thebluealgae1123@outlook.com>"]
+description = "SSD1315 OLED driver"
+license = "GPL-3.0"
+categories = ["no-std", "embedded"]
+keywords = ["embedded-development", "oled-driver"]
+repository = "https://github.com/InfyniteHeap/ssd1315"
+readme = "README.md"
+documentation = "https://docs.rs/ssd1315"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

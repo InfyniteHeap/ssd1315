@@ -1,6 +1,6 @@
-//! SSD1315
+//! # SSD1315 (WIP)
 //!
-//! Usage
+//! ## Usage
 //!
 //! We assume that you have already created an `I2c` instance.
 //! Before using OLED screen driven by SSD1315/SSD1306, you need to create an `I2CInterface` or `SPIInterface`:

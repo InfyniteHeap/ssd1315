@@ -76,7 +76,7 @@ dependencies = [
 
 [[package]]
 name = "ssd1315"
-version = "0.1.0"
+version = "0.0.0"
 dependencies = [
  "display-interface",
  "display-interface-i2c",
