@@ -1,0 +1,27 @@
+[package]
+name = "ssd1315"
+version = "0.1.0"
+edition = "2021"
+authors = ["Yue Fei <thebluealgae1123@outlook.com>"]
+description = "SSD1315 OLED driver."
+license = "GPL-3.0"
+categories = ["no-std", "embedded"]
+keywords = ["no_std", "embedded", "graphics"]
+repository = "https://github.com/InfyniteHeap/ssd1315"
+readme = "README.md"
+documentation = "https://docs.rs/ssd1315"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+display-interface = "0.5.0"
+display-interface-i2c = "0.5.0"
+display-interface-spi = "0.5.0"
+embedded-graphics = "0.8.1"
+embedded-hal = "1.0.0"
+
+[profile.release]
+codegen-units = 1
+lto = true
+panic = 'abort'
+strip = true
