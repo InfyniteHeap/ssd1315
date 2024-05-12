@@ -1,6 +1,6 @@
 [package]
 name = "ssd1315"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
 authors = ["Yue Fei <thebluealgae1123@outlook.com>"]
 description = "SSD1315 OLED driver."

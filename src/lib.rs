@@ -4,72 +4,76 @@
 //!
 //! ## Usage
 //!
-//! Import the ssd1315:
+//! Here is an example about how to use `ssd1315`:
 //!
 //! ```rust
 //! use ssd1315::*;
-//! ```
-//!
-//! We assume you have already created an I2C or SPI instance.
-//!
-//! Create an I2C interface:
-//!
-//! ```rust
-//! let interface = interface::I2cDisplayInterface::new(i2c);
-//! ```
-//!
-//! or the SPI version (you must additionally create a GPIO instance in advanced):
-//!
-//! ```rust
-//! let interface = interface::SpiDisplayInterface::new(spi, dc);
-//! ```
-//!
-//! Now we can create an SSD1315 instance:
-//!
-//! ```rust
-//! let mut display = Ssd1315::new(interface);
-//! ```
-//!
-//! We created an SSD1315 instance! But the OLED screen cannot work now.
-//! That's because we need to initialize OLED screen first before using it:
-//!
-//! ```rust
-//! display.init();
-//! ```
-//!
-//! Let's draw a circle on our OLED screen!
-//! Now we add `embedded-graphics` dependency in `Cargo.toml` and import these items:
-//!
-//! ```rust
 //! use embedded_graphics::{
 //!     pixelcolor::BinaryColor,
 //!     prelude::*,
 //!     primitives::{Circle, PrimitiveStyle},
 //! };
-//! ```
 //!
-//! Then create a circle instance:
+//! let interface = interface::I2cDisplayInterface::new(i2c);
+//! // let interface = interface::SpiDisplayInterface::new(spi, dc);
 //!
-//! ```rust
-//! Circle::new(Point::new(16, 15), 10)
+//! let mut display = Ssd1315::new(interface);
+//!
+//! Circle::new(Point::new(0, 0), 40)
 //!         .into_styled(PrimitiveStyle::with_fill(BinaryColor::On))
 //!         .draw(&mut display)
 //!         .unwrap();
-//! ```
 //!
-//! Last we must flush the `display` to let OLED screen actually display what we want:
-//! ```rust
+//! display.init();
 //! display.flush();
 //! ```
 //!
 //! Congratulations! Now you can see a little circle that is displaying on your OLED screen!
+//!
+//! If you want to apply your own config for SSD1315 when it is initializing,
+//! follow this example (we assume that you want to change the contrast of the OLED screen):
+//!
+//! ```rust
+//! use ssd1315::*;
+//! use embedded_graphics::{
+//!     pixelcolor::BinaryColor,
+//!     prelude::*,
+//!     primitives::{Circle, PrimitiveStyle},
+//! };
+//!
+//! let interface = interface::I2cDisplayInterface::new(i2c);
+//! // let interface = interface::SpiDisplayInterface::new(spi, dc);
+//!
+//! let mut config = config::Ssd1315DisplayConfig::new();
+//! config.contrast = 0xff;
+//!
+//! let mut display = Ssd1315::new(interface);
+//! display.set_custom_config(config);
+//!
+//! Circle::new(Point::new(0, 0), 40)
+//!         .into_styled(PrimitiveStyle::with_fill(BinaryColor::On))
+//!         .draw(&mut display)
+//!         .unwrap();
+//!
+//! display.init();
+//! display.flush();
+//! ```
+//!
+//! Or use a pre-set config that was provided by `ssd1315`:
+//! ```rust
+//! let config = config::Ssd1315DisplayConfig::preset_config();
+//! ```
+//!
+//! Now you can see the change of contrast!
 
 #![no_std]
 
 mod command;
+pub mod config;
 pub mod interface;
 
-use command::{oled_clear_screen, oled_init, oled_set_cursor};
+use command::{oled_init, oled_set_cursor};
+use config::Ssd1315DisplayConfig;
 
 use display_interface::{DataFormat, WriteOnlyDataCommand};
 use embedded_graphics::draw_target::DrawTarget;
@@ -81,8 +85,9 @@ use embedded_graphics::Pixel;
 /// A virtal SSD1315 device that holds an interface data
 /// and a buffer that maps to the actual buffer in the SSD1315.
 pub struct Ssd1315<DI> {
-    pub interface: DI,
-    pub buffer: [[u8; 128]; 8],
+    interface: DI,
+    buffer: [[u8; 128]; 8],
+    config: Ssd1315DisplayConfig,
 }
 
 impl<DI: WriteOnlyDataCommand> Ssd1315<DI> {
@@ -93,7 +98,30 @@ impl<DI: WriteOnlyDataCommand> Ssd1315<DI> {
         Self {
             interface,
             buffer: [[0; 128]; 8],
+            config: Default::default(),
         }
+    }
+
+    /// Set your custom configs to SSD1315, or it'll be initialized with default one.
+    ///
+    /// You needn't to call this function if you keep all configs by default.
+    pub fn set_custom_config(&mut self, config: Ssd1315DisplayConfig) {
+        self.config = config;
+    }
+
+    /// Initialize SSD1315.
+    pub fn init_screen(&mut self) {
+        oled_init(&mut self.interface, self.config);
+    }
+
+    /// Flush SSD1315 buffer to make contents actually displays on the OLED screen.
+    pub fn flush_screen(&mut self) {
+        for (page, data) in self.buffer.iter().enumerate() {
+            oled_set_cursor(&mut self.interface, page as u8);
+            self.interface.send_data(DataFormat::U8(data)).unwrap();
+        }
+
+        self.buffer = [[0; 128]; 8];
     }
 }
 
@@ -146,21 +174,5 @@ impl<DI: WriteOnlyDataCommand> DrawTarget for Ssd1315<DI> {
         }
 
         Ok(())
-    }
-}
-
-impl<DI: WriteOnlyDataCommand> Ssd1315<DI> {
-    /// Initialize SSD1315.
-    pub fn init(&mut self) {
-        oled_init(&mut self.interface);
-        oled_clear_screen(&mut self.interface);
-    }
-
-    /// Flush SSD1315 buffer to make contents actually displays on the OLED screen.
-    pub fn flush(&mut self) {
-        for (page, data) in self.buffer.iter().enumerate() {
-            oled_set_cursor(&mut self.interface, page as u8);
-            self.interface.send_data(DataFormat::U8(data)).unwrap();
-        }
     }
 }

@@ -1,3 +1,4 @@
+use crate::config::Ssd1315DisplayConfig;
 use InitCommand::*;
 use SetCursorCommand::*;
 
@@ -29,6 +30,11 @@ enum SetCursorCommand {
     SetPage(u8),
     // Set the x coordinate where data will be written.
     SetXCoordinate(u8),
+}
+
+enum DisplaySwitch {
+    On = 0xaf,
+    Off = 0xae,
 }
 
 impl InitCommand {
@@ -70,26 +76,31 @@ impl SetCursorCommand {
     }
 }
 
-pub(crate) fn oled_init<DI: WriteOnlyDataCommand>(ins: &mut DI) {
+pub(crate) fn oled_init<DI: WriteOnlyDataCommand>(ins: &mut DI, config: Ssd1315DisplayConfig) {
+    const ENTIRE_DISPLAY_ON: u8 = 0xa4;
+
     let init_commands = [
         // VDD/VBAT off State
-        DisplaySwitch(0xae),
+        DisplaySwitch(DisplaySwitch::Off as u8),
         // Initial Settings Configuration
-        SetDisplayClockDivideRatioAndOscillatorFreq(0xd5, 0x80),
-        SetMultiplexRatio(0xa8, 0x3f),
-        SetDisplayOffset(0xd3, 0x00),
-        SetDisplayStartLine(0x40),
-        SetSegmentRemap(0xa1),
-        SetComOutputScanDirection(0xc8),
-        SetComPinsHardwareConfig(0xda, 0x12),
-        SetContrastControl(0x81, 0xcf),
-        SetPrechargePeriod(0xd9, 0xf1),
-        SetVcomhDeselectLevel(0xdb, 0x30),
-        EntireDisplaySwitch(0xa4),
-        SetNormalInverseDisplay(0xa6),
+        SetDisplayClockDivideRatioAndOscillatorFreq(
+            0xd5,
+            config.display_clock_divide_ratio_and_oscillator_freq,
+        ),
+        SetMultiplexRatio(0xa8, config.multiplex_ratio),
+        SetDisplayOffset(0xd3, config.display_offset),
+        SetDisplayStartLine(config.display_start_line),
+        SetSegmentRemap(config.segment_remap as u8),
+        SetComOutputScanDirection(config.com_output_scan_direction as u8),
+        SetComPinsHardwareConfig(0xda, config.com_pins_hardware_config),
+        SetContrastControl(0x81, config.contrast),
+        SetPrechargePeriod(0xd9, config.precharge_period),
+        SetVcomhDeselectLevel(0xdb, config.v_comh_select_level),
+        EntireDisplaySwitch(ENTIRE_DISPLAY_ON),
+        SetNormalInverseDisplay(config.normal_or_inverse_display as u8),
         // Clear Screen
-        SetChargePump(0x8d, 0x14),
-        DisplaySwitch(0xaf),
+        SetChargePump(0x8d, config.charge_pump as u8),
+        DisplaySwitch(DisplaySwitch::On as u8),
     ];
 
     for cmd in init_commands {
@@ -102,14 +113,5 @@ pub(crate) fn oled_set_cursor<DI: WriteOnlyDataCommand>(ins: &mut DI, page: u8) 
 
     for cmd in set_cursor_cmd {
         cmd.set_cursor(ins)
-    }
-}
-
-pub(crate) fn oled_clear_screen<DI: WriteOnlyDataCommand>(ins: &mut DI) {
-    const VOID_ARRAY: [[u8; 128]; 8] = [[0; 128]; 8];
-
-    for (page, data) in VOID_ARRAY.iter().enumerate() {
-        oled_set_cursor(ins, page as u8);
-        ins.send_data(DataFormat::U8(data)).unwrap();
     }
 }
