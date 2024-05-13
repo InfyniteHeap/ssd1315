@@ -19,13 +19,13 @@
 //!
 //! let mut display = Ssd1315::new(interface);
 //!
-//! Circle::new(Point::new(0, 0), 40)
+//! Circle::new(Point::new(1, 1), 40)
 //!         .into_styled(PrimitiveStyle::with_fill(BinaryColor::On))
 //!         .draw(&mut display)
 //!         .unwrap();
 //!
-//! display.init();
-//! display.flush();
+//! display.init_screen();
+//! display.flush_screen();
 //! ```
 //!
 //! Congratulations! Now you can see a little circle that is displaying on your OLED screen!
@@ -50,13 +50,13 @@
 //! let mut display = Ssd1315::new(interface);
 //! display.set_custom_config(config);
 //!
-//! Circle::new(Point::new(0, 0), 40)
+//! Circle::new(Point::new(1, 1), 40)
 //!         .into_styled(PrimitiveStyle::with_fill(BinaryColor::On))
 //!         .draw(&mut display)
 //!         .unwrap();
 //!
-//! display.init();
-//! display.flush();
+//! display.init_screen();
+//! display.flush_screen();
 //! ```
 //!
 //! Or use a pre-set config that was provided by `ssd1315`:
@@ -65,6 +65,19 @@
 //! ```
 //!
 //! Now you can see the change of contrast!
+//!
+//! You might also want to draw some raw image(s) manually to fit your specific requirements.
+//! That's no matter! You can draw it/them in an easy way:
+//!
+//! ```rust
+//! let mut display = Ssd1315::new(interface);
+//!
+//! let raw_image = [[0b1010_1010; 8]; 128];
+//! raw_image.draw_from_raw(&mut display);
+//!
+//! display.init_screen();
+//! display.flush_screen();
+//! ```
 
 #![no_std]
 
@@ -125,13 +138,13 @@ impl<DI: WriteOnlyDataCommand> Ssd1315<DI> {
     }
 }
 
-impl<DI: WriteOnlyDataCommand> OriginDimensions for Ssd1315<DI> {
+impl<DI> OriginDimensions for Ssd1315<DI> {
     fn size(&self) -> Size {
         Size::new(128, 64)
     }
 }
 
-impl<DI: WriteOnlyDataCommand> DrawTarget for Ssd1315<DI> {
+impl<DI> DrawTarget for Ssd1315<DI> {
     type Color = BinaryColor;
     type Error = core::convert::Infallible;
 
@@ -174,5 +187,16 @@ impl<DI: WriteOnlyDataCommand> DrawTarget for Ssd1315<DI> {
         }
 
         Ok(())
+    }
+}
+
+pub trait DrawFromRaw {
+    fn draw_from_raw<DI>(&self, instance: &mut Ssd1315<DI>);
+}
+
+impl DrawFromRaw for [[u8; 128]; 8] {
+    /// Draw an raw image.
+    fn draw_from_raw<DI>(&self, instance: &mut Ssd1315<DI>) {
+        instance.buffer.clone_from(self)
     }
 }
