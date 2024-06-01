@@ -4,9 +4,9 @@ The SSD1315 OLED driver.
 
 ## Compatibility
 
-This driver is developed for SSD1315, but it is also theoretically compatible with SSD1306. Please note that SSD1315 doesn't support parallel ports like 6800 and 8080, which means you cannot use parallel ports when using this crate.
+This driver is developed for SSD1315, but it is also compatible with SSD1306. Please note that SSD1315 doesn't support parallel ports like 6800 and 8080, which means you cannot use parallel ports when using this crate.
 
-As developed from scratch, this driver supports new features provided in `embedded-hal` 1.0.0, but that also means this driver doesn't compatible with older hal libraries (e.g. `stm32f1xx-hal`, which hasn't adopted `embedded-hal` 1.0.0 yet).
+As developed from scratch, this driver only supports new features provided in `embedded-hal` 1.0.0, on the contrary, that means this driver doesn't compatible with older hal libraries (e.g. `stm32f1xx-hal`, which hasn't migrated to `embedded-hal` 1.0.0 yet).
 
 ## Example
 
@@ -57,7 +57,7 @@ fn main() -> ! {
     let mut display = Ssd1315::new(interface);
     display.set_custom_config(config);
 
-    Circle::new(Point::new(1, 1), 40)
+    Circle::new(Point::new(0, 0), 40)
         .into_styled(PrimitiveStyle::with_fill(BinaryColor::On))
         .draw(&mut display)
         .unwrap();
@@ -75,6 +75,6 @@ fn main() -> ! {
 
 This software is distributed under GPL-3.0 license.
 
-## Contribution
+## Contributing
 
-Contributions to this project are welcome! If you find anywhere contains bugs, please open an issue or commit a pull request.
+Thank you for your interest in contributing to this project! If you find anywhere contains bugs or any ideas that can make this project better and more effect, please open an issue or commit a pull request! :)
