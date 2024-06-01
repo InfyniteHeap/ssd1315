@@ -144,11 +144,6 @@ pub struct Ssd1315DisplayConfig {
 }
 
 impl Ssd1315DisplayConfig {
-    /// Create a new config.
-    pub fn new() -> Self {
-        Self::default()
-    }
-
     /// A pre-set configuration.
     pub fn preset_config() -> Self {
         Self {
