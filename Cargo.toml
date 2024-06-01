@@ -1,11 +1,11 @@
 [package]
 name = "ssd1315"
-version = "0.1.3"
+version = "0.2.0"
 edition = "2021"
 authors = ["Yue Fei <thebluealgae1123@outlook.com>"]
 description = "SSD1315 OLED driver."
 license = "GPL-3.0"
-categories = ["no-std", "embedded"]
+categories = ["no-std", "embedded", "hardware-support"]
 keywords = ["no_std", "embedded", "graphics"]
 repository = "https://github.com/InfyniteHeap/ssd1315"
 readme = "README.md"
@@ -17,7 +17,7 @@ documentation = "https://docs.rs/ssd1315"
 display-interface = "0.5.0"
 display-interface-i2c = "0.5.0"
 display-interface-spi = "0.5.0"
-embedded-graphics = "0.8.1"
+embedded-graphics-core = "0.4.0"
 embedded-hal = "1.0.0"
 
 [profile.release]
