@@ -91,8 +91,8 @@ use config::Ssd1315DisplayConfig;
 
 use display_interface::{DataFormat, WriteOnlyDataCommand};
 
-/// A virtal SSD1315 device that holds an interface data
-/// and a buffer that maps to the actual buffer in the SSD1315.
+/// A virtual SSD1315 device that holds an interface data,
+/// a buffer and a config that maps to the actual buffer in the SSD1315.
 pub struct Ssd1315<DI> {
     interface: DI,
     buffer: [[u8; 128]; 8],
@@ -113,7 +113,7 @@ impl<DI: WriteOnlyDataCommand> Ssd1315<DI> {
 
     /// Set your custom configs to SSD1315, or it'll be initialized with default one.
     ///
-    /// You needn't to call this function if you keep all configs by default.
+    /// You needn't call this function if you keep all configs by default.
     pub fn set_custom_config(&mut self, config: Ssd1315DisplayConfig) {
         self.config = config;
     }

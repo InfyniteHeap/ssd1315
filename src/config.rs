@@ -48,12 +48,12 @@ pub enum ChargePump {
 
 /// Configurations that applies to SSD1315.
 ///
-/// All of configurations can be found in the SSD1315 Command Table,
+/// All configurations can be found in the SSD1315 Command Table,
 /// which is in the SSD1315 datasheet.
 ///
 /// Note: In the following bits details,
 /// `x` represents either `0` or `1`
-/// while `*` represents this bit is useless and it could be both `0` and `1`.
+/// while `*` represents this bit is useless, and it could be both `0` and `1`.
 /// It's better to assign options with a hex number when configuring options.
 #[derive(Clone, Copy)]
 pub struct Ssd1315DisplayConfig {
