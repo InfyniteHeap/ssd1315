@@ -22,7 +22,7 @@ impl<DI> DrawTarget for Ssd1315<DI> {
     {
         for Pixel(coord, color) in pixels.into_iter() {
             match coord.into() {
-                // As controling a single pixel is a little hard and annoy to SSD1315,
+                // As controlling a single pixel is a little hard and annoy to SSD1315,
                 // this look-like-stupid method is adopted.
                 (x @ 0..=127, y @ 0..=7) => {
                     self.buffer[0][x as usize] |= color.to_ne_bytes()[0] << y
@@ -59,7 +59,7 @@ impl<DI> DrawTarget for Ssd1315<DI> {
 }
 
 impl DrawFromRaw for [[u8; 128]; 8] {
-    /// Draw an raw image.
+    /// Draw raw image.
     fn draw_from_raw<DI>(&self, instance: &mut Ssd1315<DI>) {
         instance.buffer.clone_from(self)
     }

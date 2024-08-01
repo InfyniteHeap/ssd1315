@@ -17,7 +17,7 @@ impl I2cDisplayInterface {
         Self::new_custom_interface(i2c, 0x3d)
     }
 
-    /// Create new I2C interface for which user must specify an screen address.
+    /// Create new I2C interface for which user must specify a screen address.
     pub fn new_custom_interface<I: I2c>(i2c: I, addr: u8) -> I2CInterface<I> {
         I2CInterface::new(i2c, addr, 0x40)
     }
