@@ -1,3 +1,6 @@
+> This repository is archived because maintainer is preparing for national post-graduate entrance examination. We hope he can gain the qualification to enter in his ideal college.
+> After secondary examination, this repository will probably be unarchived.
+
 # SSD1315
 
 The SSD1315 OLED driver.
