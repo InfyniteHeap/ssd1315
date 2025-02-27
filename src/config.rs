@@ -46,12 +46,12 @@ pub enum ChargePump {
     V9Point0 = 0x95,
 }
 
-/// Configurations that applies to SSD1315.
+/// Configurations that apply to SSD1315.
 ///
 /// All configurations can be found in the SSD1315 Command Table,
 /// which is in the SSD1315 datasheet.
 ///
-/// Note: In the following bits details,
+/// Note: In the following bit details,
 /// `x` represents either `0` or `1`
 /// while `*` represents this bit is useless, and it could be both `0` and `1`.
 /// It's better to assign options with a hex number when configuring options.
@@ -109,9 +109,9 @@ pub struct Ssd1315DisplayConfig {
     pub contrast: u8,
     /// Bits detail: `0bxxxx_xxxx`.
     ///
-    /// A\[3:0]: Phase 1 period of up to 30 DCLK, Clocks 0 is invalid entry (RESET = `0b0010`).
+    /// A\[3:0]: Phase 1 period of up to 30 DCLK, Clocks 0 is an invalid entry (RESET = `0b0010`).
     ///
-    /// A\[7:4]: Phase 2 period of up to 30 DCLK, Clocks 0 is invalid entry (RESET = `0b0010`).
+    /// A\[7:4]: Phase 2 period of up to 30 DCLK, Clocks 0 is an invalid entry (RESET = `0b0010`).
     pub precharge_period: u8,
     /// Bits detail: `0b00xx_0000`.
     ///
