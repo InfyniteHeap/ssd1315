@@ -4,7 +4,7 @@
 //!
 //! ## Usage
 //!
-//! Here is an example about how to use `ssd1315`:
+//! Here is an example of how to use `ssd1315`:
 //!
 //! ```rust
 //! use ssd1315::*;
@@ -28,10 +28,10 @@
 //! display.flush_screen();
 //! ```
 //!
-//! Congratulations! Now you can see a little circle that is displaying on your OLED screen!
+//! Congratulations! Now you can see a small circle displayed on your OLED screen!
 //!
-//! If you want to apply your own config for SSD1315 when it is initializing,
-//! follow this example (we assume that you want to change the contrast of the OLED screen):
+//! If you want to apply your own configuration for the SSD1315 (for example, to change the contrast),
+//! follow this example:
 //!
 //! ```rust
 //! use ssd1315::*;
@@ -59,15 +59,16 @@
 //! display.flush_screen();
 //! ```
 //!
-//! Or use a pre-set config that was provided by `ssd1315`:
+//! Alternatively, you can use a preset configuration provided by `ssd1315`:
+//!
 //! ```rust
 //! let config = config::Ssd1315DisplayConfig::preset_config();
 //! ```
 //!
-//! Now you can see the change of contrast!
+//! Now you can see the change in contrast!
 //!
 //! You might also want to draw some raw image(s) manually to fit your specific requirements.
-//! That's no matter! You can draw it/them in an easy way:
+//! That's no problem! You can draw it/them in an easy way:
 //!
 //! ```rust
 //! let mut display = Ssd1315::new(interface);
@@ -91,8 +92,8 @@ use config::Ssd1315DisplayConfig;
 
 use display_interface::{DataFormat, WriteOnlyDataCommand};
 
-/// A virtual SSD1315 device that holds an interface data,
-/// a buffer and a config that maps to the actual buffer in the SSD1315.
+/// A virtual SSD1315 device that holds interface data, a buffer
+/// that maps to the actual buffer in the SSD1315 and a configuration.
 pub struct Ssd1315<DI> {
     interface: DI,
     buffer: [[u8; 128]; 8],
@@ -100,9 +101,9 @@ pub struct Ssd1315<DI> {
 }
 
 impl<DI: WriteOnlyDataCommand> Ssd1315<DI> {
-    /// Create a new instance of SSD1315.
+    /// Creates a new instance of SSD1315.
     ///
-    /// The `interface` can be either an `I2c` interface or an `Spi` interface.
+    /// The `interface` can be either an I2C or an SPI interface.
     pub fn new(interface: DI) -> Self {
         Self {
             interface,
@@ -111,19 +112,18 @@ impl<DI: WriteOnlyDataCommand> Ssd1315<DI> {
         }
     }
 
-    /// Set your custom configs to SSD1315, or it'll be initialized with default one.
-    ///
-    /// You needn't call this function if you keep all configs by default.
+    /// Sets your custom configuration for the SSD1315.
+    /// If you do not call this, the display will be initialized with the default configuration.
     pub fn set_custom_config(&mut self, config: Ssd1315DisplayConfig) {
         self.config = config;
     }
 
-    /// Initialize SSD1315.
+    /// Initializes the SSD1315.
     pub fn init_screen(&mut self) {
         oled_init(&mut self.interface, self.config);
     }
 
-    /// Flush SSD1315 buffer to make contents actually displays on the OLED screen.
+    /// Flushes the SSD1315 buffer to display its contents on the OLED screen.
     pub fn flush_screen(&mut self) {
         for (page, data) in self.buffer.iter().enumerate() {
             oled_set_cursor(&mut self.interface, page as u8);

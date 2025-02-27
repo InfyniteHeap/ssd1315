@@ -4,13 +4,16 @@ The SSD1315 OLED driver.
 
 ## Compatibility
 
-This driver is developed for SSD1315, but it is also compatible with SSD1306. Please note that SSD1315 doesn't support parallel ports like 6800 and 8080, which means you cannot use parallel ports when using this crate.
+This driver was developed for the SSD1315 and is also compatible with the SSD1306. Please note that the SSD1315 does not support parallel ports (such as 6800 or 8080), so you cannot use parallel ports with this crate.
 
-As developed from scratch, this driver only supports new features provided by `embedded-hal` 1.0.0, on the contrary, that means this driver doesn't compatible with non-upgraded hal libraries (e.g. `stm32f1xx-hal`, which hasn't upgraded to `embedded-hal` 1.0.0 yet so far).
+> [!NOTE]
+> Since this driver was developed from scratch, it supports only the new features provided by `embedded-hal` 1.0.0.
+>
+> Please verify whether the HAL library you use has already adopted `embedded-hal` 1.0.0, or consider using [ssd1306](https://github.com/rust-embedded-community/ssd1306).
 
 ## Example
 
-Here is a full example (The MCU model is STM32F411CEU6):
+Here is a full example (the MCU model is STM32F411CEU6):
 
 ```rust
 #![deny(unsafe_code)]
@@ -77,4 +80,4 @@ This software is distributed under GPL-3.0 license.
 
 ## Contributing
 
-Thank you for your interest in contributing to this project! If you find anywhere contains bugs or any ideas that can make this project better and more effect, please open an issue or commit a pull request! :)
+Thank you for your interest in contributing to this project! If you find any bugs or have suggestions to improve this project, please open an issue or submit a pull request! :)
