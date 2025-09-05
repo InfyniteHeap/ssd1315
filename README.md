@@ -1,15 +1,10 @@
 # SSD1315
 
-The SSD1315 OLED driver.
+The SSD1315 device driver serves for both SSD1315 and SSD1306.
 
-## Compatibility
+## Introduction
 
-This driver was developed for the SSD1315 and is also compatible with the SSD1306. Please note that the SSD1315 does not support parallel ports (such as 6800 or 8080), so you cannot use parallel ports with this crate.
-
-> [!NOTE]
-> Since this driver was developed from scratch, it supports only the new features provided by `embedded-hal` 1.0.0.
->
-> Please verify whether the HAL library you use has already adopted `embedded-hal` 1.0.0, or consider using [ssd1306](https://github.com/rust-embedded-community/ssd1306).
+SSD1315 is a single-chip CMOS OLED/PLED driver with controller for organic/polymer light emitting diode dot-matrix graphic display system. It consists of 128 segments and 64 commons. This IC is designed for Common Cathode type OLED/PLED panel.
 
 ## Example
 
