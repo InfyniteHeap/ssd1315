@@ -21,36 +21,16 @@ impl<DI> DrawTarget for Ssd1315<DI> {
         I: IntoIterator<Item = Pixel<Self::Color>>,
     {
         for Pixel(coord, color) in pixels.into_iter() {
-            match coord.into() {
-                // As controlling a single pixel is a little hard and annoy to SSD1315,
-                // this look-like-stupid method is adopted.
-                (x @ 0..=127, y @ 0..=7) => {
-                    self.buffer[0][x as usize] |= color.to_ne_bytes()[0] << y
-                }
-                (x @ 0..=127, y @ 8..=15) => {
-                    self.buffer[1][x as usize] |= color.to_ne_bytes()[0] << (y - 8)
-                }
-                (x @ 0..=127, y @ 16..=23) => {
-                    self.buffer[2][x as usize] |= color.to_ne_bytes()[0] << (y - 16)
-                }
-                (x @ 0..=127, y @ 24..=31) => {
-                    self.buffer[3][x as usize] |= color.to_ne_bytes()[0] << (y - 24)
-                }
-                (x @ 0..=127, y @ 32..=39) => {
-                    self.buffer[4][x as usize] |= color.to_ne_bytes()[0] << (y - 32)
-                }
-                (x @ 0..=127, y @ 40..=47) => {
-                    self.buffer[5][x as usize] |= color.to_ne_bytes()[0] << (y - 40)
-                }
-                (x @ 0..=127, y @ 48..=55) => {
-                    self.buffer[6][x as usize] |= color.to_ne_bytes()[0] << (y - 48)
-                }
-                (x @ 0..=127, y @ 56..=63) => {
-                    self.buffer[7][x as usize] |= color.to_ne_bytes()[0] << (y - 56)
-                }
-                _ => unreachable!(
-                    "`x` coordinate or `page` coordinate indexed out of bound of its corresponding size of OLED screen!"
-                ),
+            let x = coord.x;
+            let y = coord.y;
+
+            if (0..128).contains(&x) && (0..64).contains(&y) {
+                // Owing to most ARM devices adopt little-endian, we
+                // use `to_le_bytes` to declare the bytes should order
+                // with little-endian.
+                self.buffer[y as usize / 8][x as usize] |= color.to_le_bytes()[0] << (y % 8);
+            } else {
+                return Err(Self::Error);
             }
         }
 
