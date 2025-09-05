@@ -1,3 +1,6 @@
+use core::convert::Infallible;
+use core::panic;
+
 use embedded_graphics_core::draw_target::DrawTarget;
 use embedded_graphics_core::geometry::{OriginDimensions, Size};
 use embedded_graphics_core::pixelcolor::raw::ToBytes;
@@ -14,7 +17,7 @@ impl<DI> OriginDimensions for Ssd1315<DI> {
 
 impl<DI> DrawTarget for Ssd1315<DI> {
     type Color = BinaryColor;
-    type Error = core::convert::Infallible;
+    type Error = Infallible;
 
     fn draw_iter<I>(&mut self, pixels: I) -> Result<(), Self::Error>
     where
@@ -30,7 +33,8 @@ impl<DI> DrawTarget for Ssd1315<DI> {
                 // with little-endian.
                 self.buffer[y as usize / 8][x as usize] |= color.to_le_bytes()[0] << (y % 8);
             } else {
-                return Err(Self::Error);
+                // HACK: It seems not suitable to just trigger panic here.
+                panic!()
             }
         }
 
