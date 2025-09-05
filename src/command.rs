@@ -79,7 +79,7 @@ impl SetCursorCommand {
 pub(crate) fn oled_init<DI: WriteOnlyDataCommand>(ins: &mut DI, config: Ssd1315DisplayConfig) {
     const ENTIRE_DISPLAY_ON: u8 = 0xa4;
 
-    let init_commands = [
+    [
         // VDD/VBAT off State
         DisplaySwitch(DisplaySwitch::Off as u8),
         // Initial Settings Configuration
@@ -101,17 +101,13 @@ pub(crate) fn oled_init<DI: WriteOnlyDataCommand>(ins: &mut DI, config: Ssd1315D
         // Clear Screen
         SetChargePump(0x8d, config.charge_pump as u8),
         DisplaySwitch(DisplaySwitch::On as u8),
-    ];
-
-    for cmd in init_commands {
-        cmd.init(ins)
-    }
+    ]
+    .into_iter()
+    .for_each(|cmd| cmd.init(ins));
 }
 
 pub(crate) fn oled_set_cursor<DI: WriteOnlyDataCommand>(ins: &mut DI, page: u8) {
-    let set_cursor_cmd = [SetPage(page), SetXCoordinate(0)];
-
-    for cmd in set_cursor_cmd {
-        cmd.set_cursor(ins)
-    }
+    [SetPage(page), SetXCoordinate(0)]
+        .into_iter()
+        .for_each(|cmd| cmd.set_cursor(ins))
 }
