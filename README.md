@@ -1,5 +1,9 @@
 # SSD1315
 
+[![Build Status](https://github.com/InfyniteHeap/ssd1315/actions/workflows/rust.yml/badge.svg)](https://github.com/InfyniteHeap/ssd1315/actions)
+[![Crates.io](https://img.shields.io/crates/v/ssd1315.svg)](https://crates.io/crates/ssd1315)
+[![Documentation](https://docs.rs/ssd1315/badge.svg)](https://docs.rs/ssd1315)
+
 The SSD1315 device driver serves for both SSD1315 and SSD1306.
 
 ## Introduction
